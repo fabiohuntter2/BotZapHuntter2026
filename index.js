@@ -9,13 +9,22 @@ const http = require('http'); // Adicionado para manter o Render ativo
 const genAI = new GoogleGenerativeAI("AIzaSyCZ_3_49RercO1mGSGg-H_RgqBCKstP-A0");
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-// Inicializa o cliente com autenticação local para salvar a sessão
 const client = new Client({
     authStrategy: new LocalAuth(),
-    authTimeoutMs: 60000, // Aumenta o tempo de espera para 60 segundos
+    authTimeoutMs: 0, // Sem limite de tempo para autenticação (evita timeout em environments lentos)
+    qrMaxRetries: 5, // Tenta gerar o QR Code até 5 vezes
     puppeteer: {
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        headless: true
+        headless: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage', // Crítico para Docker/Render (evita crash por memória compartilhada)
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process', // Pode ajudar em containers com recursos limitados
+            '--disable-gpu'
+        ]
     }
 });
 

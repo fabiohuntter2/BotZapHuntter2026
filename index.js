@@ -17,11 +17,29 @@ const client = new Client({
     }
 });
 
-// Gera o QR Code no terminal
-client.on('qr', (qr) => {
+// Gera o QR Code no terminal (Backup)
+let isPairingCodeRequested = false;
+client.on('qr', async (qr) => {
     console.log('QR RECEIVED', qr);
-    qrcode.generate(qr, { small: true });
-    console.log('Por favor, escaneie o QR Code acima com o seu WhatsApp.');
+
+    // Tenta gerar o Código de Emparelhamento (apenas na primeira vez)
+    if (!isPairingCodeRequested) {
+        const myNumber = "5598999810660"; // Seu número
+        isPairingCodeRequested = true;
+        try {
+            console.log("Solicitando código de emparelhamento...");
+            const code = await client.requestPairingCode(myNumber);
+            console.log("\n============================================");
+            console.log("CÓDIGO DE CONEXÃO: " + code);
+            console.log("============================================\n");
+            console.log("1. No WhatsApp, vá em Aparelhos Conectados > Conectar Aparelho.");
+            console.log("2. Clique em 'Conectar com número de telefone'.");
+            console.log("3. Digite o código acima.");
+        } catch (err) {
+            console.error("Erro ao gerar código:", err);
+            isPairingCodeRequested = false;
+        }
+    }
 });
 
 // Confirma que o bot está pronto

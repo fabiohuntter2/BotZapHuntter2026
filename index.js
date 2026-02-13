@@ -11,7 +11,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 const client = new Client({
     authStrategy: new LocalAuth(),
-    authTimeoutMs: 60000, // 60 segundos
+    authTimeoutMs: 0, // Sem limite de tempo (evita erro em environments lentos)
     qrMaxRetries: 5,
     puppeteer: {
         headless: true,

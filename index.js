@@ -12,8 +12,10 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 // Inicializa o cliente com autenticação local para salvar a sessão
 const client = new Client({
     authStrategy: new LocalAuth(),
+    authTimeoutMs: 60000, // Aumenta o tempo de espera para 60 segundos
     puppeteer: {
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        headless: true
     }
 });
 
@@ -132,7 +134,9 @@ client.on('message_create', async msg => {
 });
 
 // Inicializa o cliente
-client.initialize();
+client.initialize().catch(err => {
+    console.error("Erro na inicialização do cliente:", err);
+});
 
 // Servidor HTTP básico para o Render não derrubar o bot (Web Service)
 const PORT = process.env.PORT || 3000;

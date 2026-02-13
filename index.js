@@ -11,18 +11,19 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 const client = new Client({
     authStrategy: new LocalAuth(),
-    authTimeoutMs: 0, // Sem limite de tempo para autenticação (evita timeout em environments lentos)
-    qrMaxRetries: 5, // Tenta gerar o QR Code até 5 vezes
+    authTimeoutMs: 60000, // 60 segundos
+    qrMaxRetries: 5,
     puppeteer: {
         headless: true,
+        executablePath: '/usr/bin/google-chrome-stable',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage', // Crítico para Docker/Render (evita crash por memória compartilhada)
+            '--disable-dev-shm-usage',
             '--disable-accelerated-2d-canvas',
             '--no-first-run',
             '--no-zygote',
-            '--single-process', // Pode ajudar em containers com recursos limitados
+            '--single-process',
             '--disable-gpu'
         ]
     }

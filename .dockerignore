@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+.git
+.wwebjs_auth
+.wwebjs_cache
+test_ai.js
+list_models.js
+models.txt
